@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "281407601557",
+    "firebase_url": "https://sabserve-8585e.firebaseio.com",
+    "project_id": "sabserve-8585e",
+    "storage_bucket": "sabserve-8585e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281407601557:android:be460382dfdd86ae",
+        "android_client_info": {
+          "package_name": "com.velocityappsdj.subserve"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281407601557-mlai1b1tpm6icd80fthf4fd1vt6gq3nr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.velocityappsdj.subserve",
+            "certificate_hash": "f9fdbc461dee365b63093943aaecc098cde4ac47"
+          }
+        },
+        {
+          "client_id": "281407601557-vbh3gdiiik4tqivent77f05ko7br8c66.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKvwEpdIuvZrjdmALROPr9BkbP8xmuJKw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281407601557-vbh3gdiiik4tqivent77f05ko7br8c66.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
