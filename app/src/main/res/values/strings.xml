@@ -24,4 +24,8 @@
     <string name="service_type">Service Type</string>
     <string name="price">price</string>
     <string name="add_service_type">add new service type</string>
+    <string name="enteryourname">Enter your Name</string>
+    <string name="adressline2">Shop No/Flat No  and Street name</string>
+    <string name="address">Address</string>
+    <string name="submit">submit</string>
 </resources>

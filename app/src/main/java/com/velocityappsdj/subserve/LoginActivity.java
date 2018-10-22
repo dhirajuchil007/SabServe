@@ -451,7 +451,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if(user!=null)
         {
             String firebaseId=user.getUid();
-            Intent intent=new Intent(this,ServicesActivity.class);
+            Intent intent=new Intent(this,ProviderDetails.class);
             startActivity(intent);
         }
 
