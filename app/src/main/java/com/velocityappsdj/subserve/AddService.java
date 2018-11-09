@@ -5,30 +5,39 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.EditText;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.velocityappsdj.subserve.Adapters.AddServiceAdapter;
+import com.velocityappsdj.subserve.POJOS.FireBaseUtils;
+import com.velocityappsdj.subserve.POJOS.Service;
 import com.velocityappsdj.subserve.POJOS.ServiceType;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import static com.velocityappsdj.subserve.ProviderDetails.PROVIDER;
 
 public class AddService extends AppCompatActivity {
     public static final String CUSTOM_MESSAGE="custommessage";
     public static final String PARCELABLE_ARRAYLIST="parcelablearraylist";
     Button addServiceType;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    EditText serviceName;
     RecyclerView serviceTypeRecyclerView;
     ArrayList<ServiceType> serviceTypes;
     AddServiceAdapter addServiceAdapter;
+    Button submit;
     public static final String TAG="AddService";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,9 @@ public class AddService extends AppCompatActivity {
         serviceTypeRecyclerView=findViewById(R.id.service_type_recyclerview);
         serviceTypes=new ArrayList<>();
         serviceTypes.add(new ServiceType("",""));
+        serviceName=findViewById(R.id.service_name_edit_text);
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference(PROVIDER);
         if(savedInstanceState!=null)
         {
             serviceTypes=savedInstanceState.getParcelableArrayList(PARCELABLE_ARRAYLIST);
@@ -66,7 +78,37 @@ public class AddService extends AppCompatActivity {
 
             }
         });
+        submit=findViewById(R.id.submit_service);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(validateFields()) {
+                    Service s = new Service(serviceName.getText().toString(), serviceTypes);
+                    myRef.child(FireBaseUtils.getFirebaseId()).child(getString(R.string.services)).child(s.getName()).setValue(s.getServiceTypeList());
+                    onBackPressed();
+                }
 
+            }
+        });
+
+    }
+    public boolean validateFields(){
+        if(serviceName.getText().toString().matches(""))
+        {
+            return false;
+        }
+        for(ServiceType s: serviceTypes)
+        {
+            if(s.getName()==""||s.getPrice()=="")
+            {
+                Log.d(TAG, "validateFields: empty servicetype field");
+                return false;
+            
+            }
+        }
+
+
+       return true;
     }
 
     @Override

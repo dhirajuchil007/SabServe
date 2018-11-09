@@ -5,9 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
 import android.content.CursorLoader;
@@ -29,8 +30,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -44,11 +45,22 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.velocityappsdj.subserve.POJOS.LatLng;
+import com.velocityappsdj.subserve.POJOS.Provider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.velocityappsdj.subserve.ProviderDetails.PROVIDER;
 
 /**
  * A login screen that offers login via email/password.
@@ -64,6 +76,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private static final int RC_SIGN_IN = 9001;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    Provider provider;
+    LatLng location;
+    LinearLayout mainLayout;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -114,6 +131,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mainLayout=findViewById(R.id.login_layout);
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -135,6 +154,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser!=null)
+        {
+            updateUI(currentUser);
+        }
 
     }
     private void signIn() {
@@ -447,12 +470,58 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
-    public void updateUI(FirebaseUser user){
+    public void updateUI(final FirebaseUser user){
         if(user!=null)
         {
+            mProgressView.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.GONE);
             String firebaseId=user.getUid();
-            Intent intent=new Intent(this,ProviderDetails.class);
-            startActivity(intent);
+            database = FirebaseDatabase.getInstance();
+            myRef = database.getReference(PROVIDER);
+            Query userQuery=myRef.child(firebaseId);
+            userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                    for(DataSnapshot d: dataSnapshot.getChildren())
+                    {
+                        Log.d(TAG, "onlogonacc "+d.getValue());
+                        Map<String,Double> loc=new HashMap();
+                        if(d.getKey().equals("location"))
+                           loc =(HashMap)d.getValue();
+                            location=new LatLng(loc.get("latitude"),loc.get("longitude"));
+
+                    }
+
+
+//                    Log.d(TAG, "onDataChange: "+provider.getName());
+                    if(location==null) {
+                        Intent intent = new Intent(LoginActivity.this, ProviderDetails.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+
+                        // Log.d(TAG, "updateUI: closed");
+                        finish();
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(LoginActivity.this, ServicesActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        // Log.d(TAG, "updateUI: closed");
+                        finish();
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
         }
 
     }

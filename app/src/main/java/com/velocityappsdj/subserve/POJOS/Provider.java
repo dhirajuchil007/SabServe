@@ -3,11 +3,22 @@ package com.velocityappsdj.subserve.POJOS;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.maps.model.LatLng;
+import java.util.ArrayList;
+
 
 public class Provider implements Parcelable {
     String id,name,addressLine2;
     LatLng location;
+    ArrayList<Service> services;
+
+
+    public Provider(String id, String name, String addressLine2, LatLng location,ArrayList<Service> services) {
+        this.id = id;
+        this.name = name;
+        this.addressLine2 = addressLine2;
+        this.location = location;
+        this.services=services;
+    }
 
     public Provider(String addressLine2, LatLng location) {
         this.addressLine2 = addressLine2;
@@ -22,13 +33,6 @@ public class Provider implements Parcelable {
     public Provider() {
     }
 
-    protected Provider(Parcel in) {
-        id = in.readString();
-        name = in.readString();
-        addressLine2 = in.readString();
-        location = in.readParcelable(LatLng.class.getClassLoader());
-    }
-
     public static final Creator<Provider> CREATOR = new Creator<Provider>() {
         @Override
         public Provider createFromParcel(Parcel in) {
@@ -41,18 +45,23 @@ public class Provider implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getId() {
+        return id;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeString(addressLine2);
-        dest.writeParcelable(location, flags);
+    public void setId(String id) {
+        this.id = id;
     }
+
+    protected Provider(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        addressLine2 = in.readString();
+        location = in.readParcelable(LatLng.class.getClassLoader());
+
+
+    }
+
 
     public String getAddressLine2() {
         return addressLine2;
@@ -76,5 +85,27 @@ public class Provider implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(ArrayList<Service> services) {
+        this.services = services;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(addressLine2);
+        dest.writeParcelable(location, flags);
+        dest.writeTypedList(services);
     }
 }

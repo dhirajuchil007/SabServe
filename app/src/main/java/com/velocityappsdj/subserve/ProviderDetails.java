@@ -1,7 +1,7 @@
 package com.velocityappsdj.subserve;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +19,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.velocityappsdj.subserve.POJOS.FireBaseUtils;
 import com.velocityappsdj.subserve.POJOS.Provider;
 
 public class ProviderDetails extends AppCompatActivity implements OnMapReadyCallback {
@@ -30,6 +33,9 @@ public class ProviderDetails extends AppCompatActivity implements OnMapReadyCall
     EditText providerName;
     Button submit;
     LatLng ll;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    public static final String PROVIDER="provider";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +43,8 @@ public class ProviderDetails extends AppCompatActivity implements OnMapReadyCall
         setContentView(R.layout.activity_provider_details);
         getLocation=findViewById(R.id.get_location);
         ll=new LatLng(0,0);
+         database = FirebaseDatabase.getInstance();
+         myRef = database.getReference(PROVIDER);
         address=findViewById(R.id.address_title);
         providerName=findViewById(R.id.provider_name);
         addreddLine2=findViewById(R.id.address_line_2);
@@ -65,6 +73,9 @@ public class ProviderDetails extends AppCompatActivity implements OnMapReadyCall
                 if(validateFields())
                 {
                     serviceProvider.setAddressLine2(addreddLine2.getText().toString());
+                    serviceProvider.setName(providerName.getText().toString());
+                    serviceProvider.setId(FireBaseUtils.getFirebaseId());
+                    myRef.child(FireBaseUtils.getFirebaseId()).setValue(serviceProvider);
                     Intent intent=new Intent(ProviderDetails.this,ServicesActivity.class);
                     startActivity(intent);
                 }
@@ -108,7 +119,7 @@ public class ProviderDetails extends AppCompatActivity implements OnMapReadyCall
                 Place place = PlacePicker.getPlace(ProviderDetails.this,data);
                 ll=place.getLatLng();
 
-                serviceProvider.setLocation(ll);
+                serviceProvider.setLocation(new com.velocityappsdj.subserve.POJOS.LatLng(ll.latitude,ll.longitude));
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(this);

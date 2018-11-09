@@ -18,14 +18,14 @@
         android:layout_height="wrap_content"
         android:hint="@string/service_name"
         android:id="@+id/service_name_edit_text"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/service_type_recyclerview"
 
         android:layout_margin="@dimen/recyclerview_margin">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,6 +35,14 @@
         android:padding="5dp"
         android:id="@+id/add_servicetype_button"
         android:layout_margin="20dp"></Button>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:text="@string/submit"
+        android:textColor="@android:color/white"
+        android:id="@+id/submit_service"/>
 
 </LinearLayout>
 </ScrollView>

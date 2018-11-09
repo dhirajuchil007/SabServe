@@ -17,23 +17,26 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAMC-PBNgy1mpxCjpn8x8owm8NI8IlZ7M4"></meta-data>
+            android:value="AIzaSyAMC-PBNgy1mpxCjpn8x8owm8NI8IlZ7M4" />
 
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ServicesActivity"
             android:label="@string/title_activity_services"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddService" />
-        <activity android:name=".ProviderDetails"></activity>
+        <activity android:name=".ProviderDetails" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
