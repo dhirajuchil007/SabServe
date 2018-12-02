@@ -27,6 +27,7 @@
     <string name="enteryourname">Enter your Name</string>
     <string name="adressline2">Shop No/Flat No  and Street name</string>
     <string name="address">address</string>
+    <string name="addressLine1">addressLine1</string>
     <string name="submit">submit</string>
     <string name="services" translatable="false">services</string>
     <string name="servicetypes">servicetypes</string>

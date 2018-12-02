@@ -16,6 +16,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -102,13 +103,16 @@ public class ProviderDetails extends AppCompatActivity implements OnMapReadyCall
             }
         });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
+        MapFragment mapFragment=MapFragment.newInstance();
+        getFragmentManager().beginTransaction().add(R.id.map,mapFragment).commit();
         mapFragment.getMapAsync(this);
 
 
         Intent intent=getIntent();
-        if(intent.getStringExtra(ServicesActivity.DETAILS_ACTION).equals(ServicesActivity.DETAILS_ACTION))
+        if(intent.getStringExtra(ServicesActivity.DETAILS_ACTION)!=null&&intent.getStringExtra(ServicesActivity.DETAILS_ACTION).equals(ServicesActivity.DETAILS_ACTION))
         {
             newUser=false;
             populateFields();
@@ -141,7 +145,9 @@ public class ProviderDetails extends AppCompatActivity implements OnMapReadyCall
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(ProviderDetails.this,data);
                 ll=new com.velocityappsdj.subserve.POJOS.LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
-
+                MapFragment mapFragment=MapFragment.newInstance();
+        getFragmentManager().beginTransaction().add(R.id.map,mapFragment).commit();
+        mapFragment.getMapAsync(this);
                 serviceProvider.setLocation(new com.velocityappsdj.subserve.POJOS.LatLng(ll.getLatitude(),ll.getLongitude()));
 
 
@@ -161,7 +167,7 @@ public class ProviderDetails extends AppCompatActivity implements OnMapReadyCall
                 HashMap p=(HashMap)dataSnapshot.getValue();
                 Log.d("Provdetails", "onDataChange: "+dataSnapshot.getValue());
                 addreddLine2.setText(p.get(getString(R.string.addressline2_field)).toString());
-                address.setText(p.get(getString(R.string.address)).toString());
+                address.setText(p.get(getString(R.string.addressLine1)).toString());
                 providerName.setText(p.get(getString(R.string.name)).toString());
 
             }
@@ -177,9 +183,13 @@ public class ProviderDetails extends AppCompatActivity implements OnMapReadyCall
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("Provide", "snapshot"+dataSnapshot.getValue());
                 ll=dataSnapshot.getValue(com.velocityappsdj.subserve.POJOS.LatLng.class);
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
+//                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                        .findFragmentById(R.id.map);
+//                mapFragment.getMapAsync(ProviderDetails.this);
+                MapFragment mapFragment=MapFragment.newInstance();
+                getFragmentManager().beginTransaction().add(R.id.map,mapFragment).commit();
                 mapFragment.getMapAsync(ProviderDetails.this);
+                serviceProvider.setLocation(new com.velocityappsdj.subserve.POJOS.LatLng(ll.getLatitude(),ll.getLongitude()));
 
             }
 
