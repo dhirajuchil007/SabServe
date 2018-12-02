@@ -38,11 +38,17 @@ import java.util.Map;
 import static com.velocityappsdj.subserve.ProviderDetails.PROVIDER;
 
 public class ServicesActivity extends AppCompatActivity {
+    private static final String TAG ="ServicesActivity" ;
     FirebaseDatabase database;
     DatabaseReference myRef;
+    DatabaseReference serviceTypesReference;
     Provider provider;
     RecyclerView servicesRecyclerView;
     ServiceAdapter serviceAdapter;
+    ArrayList<ServiceType> serviceTypes;
+    ArrayList<Service> services;
+    public static final String DETAILS_ACTION="detailsaction";
+    public static final String SERVICE_LIST="servicelist";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,9 @@ public class ServicesActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());
         servicesRecyclerView.setLayoutManager(layoutManager);
         //servicesRecyclerView.setAdapter(serviceAdapter);
+        serviceTypes=new ArrayList<>();
+        services=new ArrayList<>();
+
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
 
@@ -64,7 +73,7 @@ public class ServicesActivity extends AppCompatActivity {
 
                 .build();
 
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("ex1");
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(getString(R.string.myaccount));
         SecondaryDrawerItem item2 = new SecondaryDrawerItem().withIdentifier(2).withName("ex2");
        // new DrawerBuilder().withActivity(this).build();
        Drawer it= new DrawerBuilder()
@@ -78,7 +87,20 @@ public class ServicesActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                         item2,
                         new SecondaryDrawerItem()
-                )
+                ).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener(){
+
+                   @Override
+                   public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                       int choice=(int)drawerItem.getIdentifier();
+                       switch(choice){
+                           case 1:Intent intent=new Intent(ServicesActivity.this,ProviderDetails.class);
+                           intent.putExtra(DETAILS_ACTION,DETAILS_ACTION);
+                           startActivity(intent);
+
+                       }
+                       return false;
+                   }
+               })
                 .build();
 
 
@@ -91,44 +113,87 @@ public class ServicesActivity extends AppCompatActivity {
             }
         });
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference(PROVIDER);
-        Query userQuery=myRef.child(FireBaseUtils.getFirebaseId()).child(getString(R.string.services));
+        myRef = database.getReference(getString(R.string.services));
+        Query userQuery=myRef.child(FireBaseUtils.getFirebaseId());
         userQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<Map<String,String>> temp=new ArrayList<>();
-                ArrayList<Service> services=new ArrayList<>();
+
 
              for(DataSnapshot d: dataSnapshot.getChildren())
              {
-                 Log.d("TEST", "onDataChange: "+d.getValue());
-                 String sname=d.getKey();
-                 ArrayList<ServiceType> stypes=new ArrayList<>();
-                 temp=(ArrayList<Map<String,String>>) d.getValue();
-                 for(Map p: temp)
-                 {
-                     stypes.add(new ServiceType((String)p.get("name"),(String)p.get("price")));
-                 }
-                 services.add(new Service(sname,stypes));
+       //  Log.d("TEST", "onDataChange: "+d.getValue());
+               //Service  s =new Service();
+              final Service  s=d.getValue(Service.class);
+               String id=d.getKey();
+                 Log.d("TEST", ": "+id);
+               //  final ArrayList<ServiceType> serviceTypes=new ArrayList<>();
+                 serviceTypesReference=database.getReference(getString(R.string.servicetypes)).child(id);
+                 serviceTypesReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                     @Override
+                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        //services.clear();
+                         ArrayList<ServiceType> serviceTypes=new ArrayList<>();
+                         Service tempService=new Service(s.getName());
+                         for(DataSnapshot dd:dataSnapshot.getChildren())
+                         {
+                             ServiceType st= dd.getValue(ServiceType.class);
+                             Log.d("TEST", "typename: "+st.getName());
+                             serviceTypes.add(st);
+                         }
+                         tempService.setServiceTypeArrayList(serviceTypes);
+
+                         services.add(tempService);
+                         serviceAdapter=new ServiceAdapter(services);
+                         servicesRecyclerView.setAdapter(serviceAdapter);
+                     }
+
+                     @Override
+                     public void onCancelled(DatabaseError databaseError) {
+                         Log.d(TAG, databaseError.getMessage());
+
+                     }
+                 });
+                // Log.d("TEST", "typename: "+serviceTypes.get(0).getName());
+                 s.setServiceTypeArrayList(serviceTypes);
+
+//                 String sname=d.getKey();
+//                 ArrayList<ServiceType> stypes=new ArrayList<>();
+//                 temp=(ArrayList<Map<String,String>>) d.getValue();
+//                 for(Map p: temp)
+//                 {
+//                     stypes.add(new ServiceType((String)p.get("name"),(String)p.get("price")));
+//                 }
+//                 services.add(new Service(sname,stypes));
 
 
              }
 
 
                    Log.d("TEST", "onServiceAdd: "+services.size());
-                   serviceAdapter=new ServiceAdapter(services);
-                   servicesRecyclerView.setAdapter(serviceAdapter);
+//                   serviceAdapter=new ServiceAdapter(services);
+//                   servicesRecyclerView.setAdapter(serviceAdapter);
 
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
+                Log.d(TAG, databaseError.getMessage());
             }
         });
 
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        services.clear();
+    }
+
 
 }

@@ -12,12 +12,14 @@
     android:layout_height="match_parent"
 
     tools:context=".AddService">
+
     <EditText
         android:layout_margin="@dimen/edit_text_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/service_name"
         android:id="@+id/service_name_edit_text"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

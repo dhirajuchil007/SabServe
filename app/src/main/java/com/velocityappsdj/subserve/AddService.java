@@ -33,6 +33,8 @@ public class AddService extends AppCompatActivity {
     Button addServiceType;
     FirebaseDatabase database;
     DatabaseReference myRef;
+    DatabaseReference serviceRefrence;
+    DatabaseReference serviceTypereference;
     EditText serviceName;
     RecyclerView serviceTypeRecyclerView;
     ArrayList<ServiceType> serviceTypes;
@@ -49,6 +51,8 @@ public class AddService extends AppCompatActivity {
         serviceName=findViewById(R.id.service_name_edit_text);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference(PROVIDER);
+        serviceRefrence=database.getReference(getString(R.string.services));
+        serviceTypereference=database.getReference(getString(R.string.servicetypes));
         if(savedInstanceState!=null)
         {
             serviceTypes=savedInstanceState.getParcelableArrayList(PARCELABLE_ARRAYLIST);
@@ -83,8 +87,16 @@ public class AddService extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(validateFields()) {
-                    Service s = new Service(serviceName.getText().toString(), serviceTypes);
-                    myRef.child(FireBaseUtils.getFirebaseId()).child(getString(R.string.services)).child(s.getName()).setValue(s.getServiceTypeList());
+                   // Service s = new Service(serviceName.getText().toString(), serviceTypes);
+                    Service s =new Service(serviceName.getText().toString());
+
+
+                 String serviceId=   serviceRefrence.child(FireBaseUtils.getFirebaseId()).push().getKey();
+                 serviceRefrence.child(FireBaseUtils.getFirebaseId()).child(serviceId).setValue(s);
+
+                    for(ServiceType ss:serviceTypes) {
+                        serviceTypereference.child(serviceId).push().setValue(ss);
+                    }
                     onBackPressed();
                 }
 

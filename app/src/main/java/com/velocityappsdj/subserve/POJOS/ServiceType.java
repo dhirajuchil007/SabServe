@@ -14,6 +14,9 @@ public class ServiceType implements Parcelable {
         this.price = price;
     }
 
+    public ServiceType() {
+    }
+
     public ServiceType(Parcel in) {
         name = in.readString();
         price = in.readString();

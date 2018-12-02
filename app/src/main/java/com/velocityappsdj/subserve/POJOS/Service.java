@@ -7,9 +7,20 @@ import java.util.ArrayList;
 
 public class Service implements Parcelable {
     String name;
-    ArrayList<ServiceType> serviceTypeList;
+    ArrayList<ServiceType> serviceTypeArrayList;
+
+    public ArrayList<ServiceType> getServiceTypeArrayList() {
+        return serviceTypeArrayList;
+    }
+
+    public void setServiceTypeArrayList(ArrayList<ServiceType> serviceTypeArrayList) {
+        this.serviceTypeArrayList = serviceTypeArrayList;
+    }
 
     public Service() {
+    }
+    public Service(String name) {
+        this.name=name;
     }
 
     public String getName() {
@@ -21,22 +32,12 @@ public class Service implements Parcelable {
         this.name = name;
     }
 
-    public ArrayList<ServiceType> getServiceTypeList() {
-        return serviceTypeList;
-    }
 
-    public void setServiceTypeList(ArrayList<ServiceType> serviceTypeList) {
-        this.serviceTypeList = serviceTypeList;
-    }
 
-    public Service(String name, ArrayList<ServiceType> serviceList) {
-        this.name = name;
-        this.serviceTypeList = serviceList;
-    }
 
     protected Service(Parcel in) {
         name = in.readString();
-        serviceTypeList = in.createTypedArrayList(ServiceType.CREATOR);
+       // serviceTypeList = in.createTypedArrayList(ServiceType.CREATOR);
     }
 
     public static final Creator<Service> CREATOR = new Creator<Service>() {
@@ -59,6 +60,6 @@ public class Service implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeTypedList(serviceTypeList);
+      //  dest.writeTypedList(serviceTypeList);
     }
 }

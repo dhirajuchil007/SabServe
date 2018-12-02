@@ -26,7 +26,12 @@
     <string name="add_service_type">add new service type</string>
     <string name="enteryourname">Enter your Name</string>
     <string name="adressline2">Shop No/Flat No  and Street name</string>
-    <string name="address">Address</string>
+    <string name="address">address</string>
     <string name="submit">submit</string>
     <string name="services" translatable="false">services</string>
+    <string name="servicetypes">servicetypes</string>
+    <string name="myaccount">My Account</string>
+    <string name="addressline2_field" translatable="false">addressLine2</string>
+    <string name="name">name</string>
+    <string name="location">location</string>
 </resources>

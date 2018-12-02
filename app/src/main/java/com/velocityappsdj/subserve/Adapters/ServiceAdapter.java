@@ -42,7 +42,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.serviceName.setText(serviceArrayList.get(position).getName());
-        holder.numServiceTypes.setText(String.valueOf(serviceArrayList.get(position).getServiceTypeList().size()));
+        holder.numServiceTypes.setText(String.valueOf(serviceArrayList.get(position).getServiceTypeArrayList().size()));
     }
 
     @Override

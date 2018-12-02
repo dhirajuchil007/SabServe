@@ -7,17 +7,28 @@ import java.util.ArrayList;
 
 
 public class Provider implements Parcelable {
-    String id,name,addressLine2;
+    String id;
+    String name;
+    String addressLine2;
+
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+
+    public void setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+    }
+
+    String addressLine1;
     LatLng location;
-    ArrayList<Service> services;
 
 
-    public Provider(String id, String name, String addressLine2, LatLng location,ArrayList<Service> services) {
+    public Provider(String id, String name, String addressLine2, LatLng location) {
         this.id = id;
         this.name = name;
         this.addressLine2 = addressLine2;
         this.location = location;
-        this.services=services;
+
     }
 
     public Provider(String addressLine2, LatLng location) {
@@ -87,13 +98,7 @@ public class Provider implements Parcelable {
         this.name = name;
     }
 
-    public ArrayList<Service> getServices() {
-        return services;
-    }
 
-    public void setServices(ArrayList<Service> services) {
-        this.services = services;
-    }
 
     @Override
     public int describeContents() {
@@ -106,6 +111,6 @@ public class Provider implements Parcelable {
         dest.writeString(name);
         dest.writeString(addressLine2);
         dest.writeParcelable(location, flags);
-        dest.writeTypedList(services);
+
     }
 }
